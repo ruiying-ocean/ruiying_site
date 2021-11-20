@@ -27,8 +27,8 @@ After all, I am also not an expert in this.
 
 
 To make a map, at least two types of data are needed:
-- Geographic Information System (GIS) data for position
-- Research data _per se_ for value
+* Geographic Information System (GIS) data for position
+* Research data _per se_ for value
 
 Sometimes these two are combined to a unified data (e.g., population data as an attribute in a shapefile). However, 
 in most cases for those who are not studying geography (like me), we have to join
@@ -130,6 +130,9 @@ tm_shape(world)+tm_borders()+tm_fill()+
 ```
 
 # ggmap
+
+`ggmap` is another friendly package for people from other research background, it provides
+a function `get_map()` to download some map data from google, open street map and so on.
 ```{r, message=FALSE}
 library(ggmap)
 
@@ -152,8 +155,8 @@ library(ncdf4)
 library(terra)
 library(rasterVis)
 
-# an example file from UCA
-# Rhttps://www.unidata.ucar.edu/software/netcdf/examples/files.html
+# an example file from UCAR
+# https://www.unidata.ucar.edu/software/netcdf/examples/files.html
 nc <- nc_open("tos_O1_2001-2002.nc")
 #names(nc$var) # print all variables
 sst_K <- ncvar_get(nc, varid="tos") #in Kelvin
@@ -163,7 +166,9 @@ sst <- sst_K - 273.15 #in celcius
 
 sst_raster <- flip(rast(t(sst[,,1])))
 levelplot(sst_raster, margin=FALSE,
-          main="sea surface temprature 2001-2002")
+          main="sea surface temprature 2001-2002",
+          xlab="",
+          ylab="")
 ```
 
 # More resources

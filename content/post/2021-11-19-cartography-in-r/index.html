@@ -29,8 +29,8 @@ geographic/spatial visualisation. However, I just found numerous methods to do t
 depending on which data type you have. So this post will not introduce the basic of R and GIS.
 After all, I am also not an expert in this.</p>
 <p>To make a map, at least two types of data are needed:
-- Geographic Information System (GIS) data for position
-- Research data <em>per se</em> for value</p>
+* Geographic Information System (GIS) data for position
+* Research data <em>per se</em> for value</p>
 <p>Sometimes these two are combined to a unified data (e.g., population data as an attribute in a shapefile). However,
 in most cases for those who are not studying geography (like me), we have to join
 the research data (in csv, netCDF) to GIS fields based on shared “key/id column”. The relevant GIS data probably can be found in third-party packages such as <code>maps</code> or <code>mapdata</code>, but for more demands like custom resolution, one have to download in other sources.</p>
@@ -123,6 +123,8 @@ tm_shape(world)+tm_borders()+tm_fill()+
 </div>
 <div id="ggmap" class="section level1">
 <h1>ggmap</h1>
+<p><code>ggmap</code> is another friendly package for people from other research background, it provides
+a function <code>get_map()</code> to download some map data from google, open street map and so on.</p>
 <pre class="r"><code>library(ggmap)
 
 #downloading raster data by get_map(). REQUIRE GOOGLE API
@@ -141,8 +143,8 @@ ggmap(gmap) + theme_void()</code></pre>
 library(terra)
 library(rasterVis)
 
-# an example file from UCA
-# Rhttps://www.unidata.ucar.edu/software/netcdf/examples/files.html
+# an example file from UCAR
+# https://www.unidata.ucar.edu/software/netcdf/examples/files.html
 nc &lt;- nc_open(&quot;tos_O1_2001-2002.nc&quot;)
 #names(nc$var) # print all variables
 sst_K &lt;- ncvar_get(nc, varid=&quot;tos&quot;) #in Kelvin
@@ -152,7 +154,9 @@ sst &lt;- sst_K - 273.15 #in celcius
 
 sst_raster &lt;- flip(rast(t(sst[,,1])))
 levelplot(sst_raster, margin=FALSE,
-          main=&quot;sea surface temprature 2001-2002&quot;)</code></pre>
+          main=&quot;sea surface temprature 2001-2002&quot;,
+          xlab=&quot;&quot;,
+          ylab=&quot;&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="more-resources" class="section level1">
