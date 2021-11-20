@@ -136,8 +136,8 @@ gmap &lt;- get_stamenmap(bbox = c(left = -10, bottom = 50, right = 5, top = 60),
 ggmap(gmap) + theme_void()</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
-<div id="raster-geom_raster" class="section level1">
-<h1>raster + geom_raster</h1>
+<div id="raster-levelplotgeom_raster" class="section level1">
+<h1>raster + levelplot/geom_raster</h1>
 <p>netCDF data can be transformed to raster format.</p>
 <pre class="r"><code>library(ncdf4)
 library(terra)
@@ -148,16 +148,29 @@ library(rasterVis)
 nc &lt;- nc_open(&quot;tos_O1_2001-2002.nc&quot;)
 #names(nc$var) # print all variables
 sst_K &lt;- ncvar_get(nc, varid=&quot;tos&quot;) #in Kelvin
-sst &lt;- sst_K - 273.15 #in celcius
+sst &lt;- sst_K - 273.15 #in Celsius
 #dim(sst) # check dimension
 #image(sst[,,1])
 
 sst_raster &lt;- flip(rast(t(sst[,,1])))
 levelplot(sst_raster, margin=FALSE,
-          main=&quot;sea surface temprature 2001-2002&quot;,
-          xlab=&quot;&quot;,
-          ylab=&quot;&quot;)</code></pre>
+          main=&quot;sea surface temprature 2001-2002&quot;)</code></pre>
 <p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>We can also use ggplot to do the plotting. But notice that the array from netCDF is not containing
+CRS data, that’s why we have x-y axis with 0-1 range.</p>
+<pre class="r"><code>library(ggplot2)
+
+#to use geom_raster/geom_tile, we should transfer raster to a data.frame
+sst_df &lt;- sst_raster |&gt; terra::as.data.frame(xy=TRUE) #pipe requires R &gt; 4.1, otherwise use %&gt;% in tidyverse
+names(sst_df)[3] &lt;- &quot;sst&quot;
+ggplot(sst_df) + geom_raster(aes(x=x, y=y, fill=sst)) + theme_light() + scale_fill_viridis_c()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code># what&#39;s the difference between |&gt; and %&gt;%?
+#https://stackoverflow.com/questions/67633022/what-are-the-differences-between-rs-new-native-pipe-and-the-magrittr-pipe</code></pre>
+<p>As for the difference between <code>geom_tile</code>, <code>geom_raster</code>, let’s see the offical answer:</p>
+<blockquote>
+<p>geom_rect() and geom_tile() do the same thing, but are parameterised differently: geom_rect() uses the locations of the four corners (xmin, xmax, ymin and ymax), while geom_tile() uses the center of the tile and its size (x, y, width, height). geom_raster() is a high performance special case for when all the tiles are the same size.</p>
+</blockquote>
 </div>
 <div id="more-resources" class="section level1">
 <h1>More resources</h1>
