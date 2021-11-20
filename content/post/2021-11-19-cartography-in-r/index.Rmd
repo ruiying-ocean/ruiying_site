@@ -146,7 +146,7 @@ ggmap(gmap) + theme_void()
 ```
 
 
-# raster + geom_raster
+# raster + levelplot
 
 netCDF data can be transformed to raster format.
 
@@ -154,13 +154,13 @@ netCDF data can be transformed to raster format.
 library(ncdf4)
 library(terra)
 library(rasterVis)
-
+library(ggplot2)
 # an example file from UCAR
 # https://www.unidata.ucar.edu/software/netcdf/examples/files.html
 nc <- nc_open("tos_O1_2001-2002.nc")
 #names(nc$var) # print all variables
 sst_K <- ncvar_get(nc, varid="tos") #in Kelvin
-sst <- sst_K - 273.15 #in celcius
+sst <- sst_K - 273.15 #in Celsius
 #dim(sst) # check dimension
 #image(sst[,,1])
 
