@@ -1,0 +1,24 @@
+{
+    "id": "51F5957A",
+    "path": "~/ry_site/config.toml",
+    "project_path": "config.toml",
+    "type": "toml",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1637432647873.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1637432615,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1637432615,
+    "read_only": false,
+    "read_only_alternatives": []
+}

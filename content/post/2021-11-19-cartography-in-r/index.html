@@ -1,0 +1,166 @@
+---
+title: Cartography in R
+author: Rui Ying
+date: '2021-11-19'
+slug: []
+categories:
+  - R
+  - GIS
+tags:
+  - R; Data Science
+summary: 'Plot map in R'
+authors: []
+lastmod: '2021-11-19T12:22:43Z'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This post is to simply introduce how to make a map in R environment, or more officially,
+geographic/spatial visualisation. However, I just found numerous methods to do this in R,
+depending on which data type you have. So this post will not introduce the basic of R and GIS.
+After all, I am also not an expert in this.</p>
+<p>To make a map, at least two types of data are needed:
+- Geographic Information System (GIS) data for position
+- Research data <em>per se</em> for value</p>
+<p>Sometimes these two are combined to a unified data (e.g., population data as an attribute in a shapefile). However,
+in most cases for those who are not studying geography (like me), we have to join
+the research data (in csv, netCDF) to GIS fields based on shared “key/id column”. The relevant GIS data probably can be found in third-party packages such as <code>maps</code> or <code>mapdata</code>, but for more demands like custom resolution, one have to download in other sources.</p>
+</div>
+<div id="csv-file-with-lat-and-long-columns" class="section level1">
+<h1>CSV file with lat and long columns</h1>
+<p>There are two methods to plot a csv data frame on a map:
+- plot layers using <code>ggplot2</code>
+- transform to <code>sf</code></p>
+<p>Because the latter one is same to sections below, so I will introduce <code>ggplot2</code>,
+which is very (but not limitedly) proficient at analysing data frames.</p>
+<pre class="r"><code>library(ggplot2)
+library(maps) # outline data for continents,countries
+library(mapdata) # extra map datasets
+library(mapproj) # map projection
+#library(maptools)
+
+# a quickest method to plot a global map
+# map(&quot;world&quot;)
+
+# Here I create a simple dataframe, which can be replaced to your data by read.csv()
+toy_df &lt;- data.frame(city = c(&quot;Bristol&quot;, &quot;Shangrao&quot;),
+                     long = c(51.45, 28.45),
+                     lat = c(-2.59, 117.94))
+
+world &lt;- map_data(&quot;world&quot;) # a ggplot2 function to get a world data.frame,see also borders
+
+# notice x is lat and y is long, which differs normal impression
+ggplot(world) +
+  geom_polygon(aes(x = long, y = lat, group=group)) + 
+  geom_label(data= toy_df, aes(lat, long, label=city)) +
+  coord_map(&quot;mollweide&quot;, xlim=c(-180,180)) + # change the projection
+  theme_minimal()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Actually<code>ggfortify</code> provides the <code>autoplot</code> function, which is a quicker wrapper for ggplot2. So
+we can do the same by using less command.</p>
+<pre class="r"><code>library(ggfortify)
+world &lt;-  map(&#39;world&#39;, plot = FALSE, fill = TRUE)
+autoplot(world, geom = &#39;polygon&#39;) +
+  geom_point(data = toy_df, aes(lat, long),
+             color=&quot;red&quot;, size=2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>There is another geom type: geom_map in ggplot. The difference between geom_map and
+geom_polygon is that the latter just plot the polygon (or position) and does not care about
+the value, but the geom_map contains both position and value information. Therefore,
+there must be a id columns shared by both polygon and value data frames, but no
+need to add lat/long in aes().</p>
+<p>An example</p>
+<pre class="r"><code>fr_map &lt;- map_data(&quot;france&quot;)
+fr_data &lt;- data.frame(region = unique(fr_map$region), 
+                      value     = rnorm(length(unique(fr_map$region))))
+
+ggplot(fr_data, aes(map_id = region)) +
+  geom_map(aes(fill = value), map=fr_map) +
+  expand_limits(x = fr_map$long, y = fr_map$lat) +
+  coord_fixed()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="sf-object-geom_sf" class="section level1">
+<h1>sf object + geom_sf</h1>
+<p>shp file can be read in R through <code>sf</code> or <code>rgal</code>, and then plot using <code>ggplot</code> .</p>
+<pre class="r"><code>#from https://r-spatial.org/r/2018/10/25/ggplot2-sf.htm
+library(sf)</code></pre>
+<pre><code>## Linking to GEOS 3.9.1, GDAL 3.2.3, PROJ 7.2.1</code></pre>
+<pre class="r"><code>library(rnaturalearth) #another public map data package
+#library(rnaturalearthdata)
+
+it_data =st_as_sf(map(&quot;italy&quot;, plot = FALSE, fill = TRUE)) #polygons
+it_sf &lt;- ne_countries(scale = &quot;medium&quot;, country=&quot;italy&quot;,returnclass = &quot;sf&quot;) #an outline
+ggplot(it_sf)+geom_sf()+geom_sf(data = it_data, fill = NA) </code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>#and you can add more geom_sf() based on data in your  hand
+#plot(uk_sf$geometry) #uk_sf$geometry equals st_geomety(uk_sf)</code></pre>
+</div>
+<div id="sf-object-tmap" class="section level1">
+<h1>sf object + tmap</h1>
+<p><code>tmap</code> has a similar layer-based syntax to plot map, but should be more professional and specilised than <code>ggplot2.</code></p>
+<pre class="r"><code>#from https://geocompr.robinlovelace.net/adv-map.html
+library(spData)
+library(spDataLarge)
+library(tmap)
+library(sf)
+
+world &lt;- spData::world
+toy_sf &lt;- st_as_sf(toy_df, coords = c(&quot;lat&quot;, &quot;long&quot;), crs=4326) #WGS84
+
+tm_shape(world)+tm_borders()+tm_fill()+
+  tm_shape(toy_sf) + tm_dots(size=.5)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="ggmap" class="section level1">
+<h1>ggmap</h1>
+<pre class="r"><code>library(ggmap)
+
+#downloading raster data by get_map(). REQUIRE GOOGLE API
+gmap &lt;- get_stamenmap(bbox = c(left = -10, bottom = 50, right = 5, top = 60),
+                      zoom = 6,
+                      maptype=&#39;watercolor&#39;,
+                      messaging = FALSE)
+
+ggmap(gmap) + theme_void()</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="raster-geom_raster" class="section level1">
+<h1>raster + geom_raster</h1>
+<p>netCDF data can be transformed to raster format.</p>
+<pre class="r"><code>library(ncdf4)
+library(terra)
+library(rasterVis)
+
+# an example file from UCA
+# Rhttps://www.unidata.ucar.edu/software/netcdf/examples/files.html
+nc &lt;- nc_open(&quot;tos_O1_2001-2002.nc&quot;)
+#names(nc$var) # print all variables
+sst_K &lt;- ncvar_get(nc, varid=&quot;tos&quot;) #in Kelvin
+sst &lt;- sst_K - 273.15 #in celcius
+#dim(sst) # check dimension
+#image(sst[,,1])
+
+sst_raster &lt;- flip(rast(t(sst[,,1])))
+levelplot(sst_raster, margin=FALSE,
+          main=&quot;sea surface temprature 2001-2002&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="more-resources" class="section level1">
+<h1>More resources</h1>
+<ul>
+<li><code>rworldmap</code> for extra intersting data</li>
+<li><code>cowplot</code> for subplot added on ggplot objects</li>
+<li><code>gganimate</code> for animated plot</li>
+<li><code>leaflet</code> for interactive map</li>
+</ul>
+</div>
