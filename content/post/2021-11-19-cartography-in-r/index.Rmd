@@ -146,7 +146,7 @@ ggmap(gmap) + theme_void()
 ```
 
 
-# raster + levelplot
+# raster + levelplot/geom_raster
 
 netCDF data can be transformed to raster format.
 
@@ -154,7 +154,7 @@ netCDF data can be transformed to raster format.
 library(ncdf4)
 library(terra)
 library(rasterVis)
-library(ggplot2)
+
 # an example file from UCAR
 # https://www.unidata.ucar.edu/software/netcdf/examples/files.html
 nc <- nc_open("tos_O1_2001-2002.nc")
@@ -166,10 +166,23 @@ sst <- sst_K - 273.15 #in Celsius
 
 sst_raster <- flip(rast(t(sst[,,1])))
 levelplot(sst_raster, margin=FALSE,
-          main="sea surface temprature 2001-2002",
-          xlab="",
-          ylab="")
+          main="sea surface temprature 2001-2002")
 ```
+
+We can also use ggplot to do the plotting. But notice that the array from netCDF is not containing
+CRS data, that's why we have x-y axis with 0-1 range.
+```{r}
+library(ggplot2)
+
+#to use geom_raster/geom_tile, we should transfer raster to a data.frame
+sst_df <- sst_raster |> terra::as.data.frame(xy=TRUE) #pipe requires R > 4.1, otherwise use %>% in tidyverse
+names(sst_df)[3] <- "sst"
+ggplot(sst_df) + geom_raster(aes(x=x, y=y, fill=sst)) + theme_light() + scale_fill_viridis_c()
+
+# what's the difference between |> and %>%?
+#https://stackoverflow.com/questions/67633022/what-are-the-differences-between-rs-new-native-pipe-and-the-magrittr-pipe
+```
+
 
 # More resources
 - `rworldmap` for extra intersting data
