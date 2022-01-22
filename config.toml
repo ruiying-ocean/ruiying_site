@@ -22,7 +22,7 @@ home = ["HTML"]
   algolia_search = false
 
   # Sidebar settings
-  sidebar_about_description = "Marine ecologist; Geek; Zen"
+  sidebar_about_description = "Marine ecologist; Zen"
   #sidebar_avatar = "img/avatar-zhaohuabing.jpg"      # use absolute URL, seeing it's used in both `/` and `/about/`
   sidebar_avatar = ""      # use absolute URL, seeing it's used in both `/` and `/about/`
 

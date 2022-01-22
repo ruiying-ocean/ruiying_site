@@ -53,11 +53,12 @@ First enable gcc with libgccjit. `cd /usr/local/Homebrew/Library/Taps/homebrew/h
 
 Then run `brew install gcc`.
 
-After successful installation of libgccjit, there are (at least) three ways to compile Emacs native comp (emacs-plus@28 works for my laptop with Big Sur 11.4).
+After successful installation of libgccjit, there are (at least) four ways to compile Emacs native comp (emacs-plus@28 works for my laptop with Big Sur 11.4).
 
 - https://github.com/d12frosted/homebrew-emacs-plus.git
 - https://github.com/daviderestivo/homebrew-emacs-head
 - https://github.com/jimeh/build-emacs-for-macos.git
+- https://github.com/jimeh/homebrew-emacs-builds.git (binary)
 
 After compilation, it takes a while to compile your lisp codes. Just wait.
 

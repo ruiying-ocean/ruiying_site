@@ -37,7 +37,9 @@ the research data (in csv, netCDF) to GIS fields based on shared "key/id column"
 # CSV file with lat and long columns
 
 There are two methods to plot a csv data frame on a map:
+
 - plot layers using `ggplot2`
+
 - transform to `sf`
 
 Because the latter one is same to sections below, so I will introduce `ggplot2`, 
