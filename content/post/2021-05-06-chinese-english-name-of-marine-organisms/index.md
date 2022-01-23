@@ -106,7 +106,7 @@ Structure: Eon(宙)-Era(代)-Period(纪)-Epoch(世)-age(期)
 ```
 + -- Precambrian（隐生宙）
 |	|-- Archean（太古宙，初始生物的时期）
-|	+-- Proterozoic（元古宙，久远的原始生物的时期）
+|	|-- Proterozoic（元古宙，久远的原始生物的时期）
 |
 +-- Phanerozoic（显生宙，现代生物存在的时期）
 	|
@@ -116,12 +116,12 @@ Structure: Eon(宙)-Era(代)-Period(纪)-Epoch(世)-age(期)
 	|	| -- Silurian（志留纪）
 	|	| -- Devonian（泥盘纪）
 	|	| -- Carboniferous（石炭纪）
-	|	+ -- Permian（二叠纪）
+	|	| -- Permian（二叠纪）
 	|
 	+ -- Mesozoic（中生代，爬行动物）
 	|	| -- Triassic
 	|	| -- Jurassic
-	|	+ -- Cretaceous
+	|	| -- Cretaceous
 	|
 	+ -- Cenozoic（新生代，哺乳动物）
 		|
@@ -129,7 +129,7 @@ Structure: Eon(宙)-Era(代)-Period(纪)-Epoch(世)-age(期)
 		|	| -- Paleocene
 		|	| -- Ecocene
 		|	| -- Oligocene
-	    |
+		|
 		+ -- Neogene
 		|	| -- Miocene
 		|	| -- Pliocene
