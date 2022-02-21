@@ -10,6 +10,7 @@ tags:
   - tag2
 subtitle: ''
 description: ''
+summary: 'A brief study of Hain and Sigman, (2014) The Biological Pump in the Past'
 image: ''
 ---
 
