@@ -14,4 +14,4 @@ summary: 'A brief study of Hain and Sigman, (2014) The Biological Pump in the Pa
 image: ''
 ---
 
-![Click here to download PDF](images/inorganic carbon system.pdf)
+[Click here to download PDF](inorganic_carbon_system.pdf)
