@@ -99,7 +99,12 @@ Anyway, always use `implict none` to override this stupid declaring!
 
 **Submodule**: Extends an existing module and is used for defining variable and procedure definitions that only that module can access; useful for more complex apps and libraries
 
-> In FORTRAN, dummy parameters are same as formal argument (形参) in other languages. In other languages, dummy arguments equals unused arguments.
+> In FORTRAN function/subroutine, dummy parameters are same as formal argument (形参) in other languages. In other languages, dummy arguments equals unused arguments.
+
+> In subroutine, INTEND (IN):  indicating take value from outside and cannot be modified
+
+
+> INTEND (OUT): indicating that their values will be computed and passed to the outside.
 
 ```fortran
 ! function always return a result
