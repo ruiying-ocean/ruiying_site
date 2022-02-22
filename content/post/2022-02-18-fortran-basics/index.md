@@ -99,7 +99,7 @@ Anyway, always use `implict none` to override this stupid declaring!
 
 **Submodule**: Extends an existing module and is used for defining variable and procedure definitions that only that module can access; useful for more complex apps and libraries
 
-
+> In FORTRAN, dummy parameters are same as formal argument (形参) in other languages. In other languages, dummy arguments equals unused arguments.
 
 ```fortran
 ! function always return a result
